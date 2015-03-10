@@ -25,8 +25,39 @@ time intervals
 in /bot/order/order.js until the order is settled or hits a max try count and is cancelled, at which point a trend shift is identified or the order is retried at a new price
 - the bot will only make one buy or sell order at a time, attempting to pair one with the other, unless the trend changes and the next order is no longer favorable. e.g. If the trend is bullish, a buy order is placed. If the buy order is successful it will then wait until the trend switches to bearish and then place a sell order.
 
+### Set up your environment
+
+Edit `config.json` and enter your `key`, `secret`, and `passphrase`. *DO NOT COMMIT THESE VALUES TO GITHUB.*
+
+Install dependencies:
+```
+npm install
+```
+
+Initialize postgres:
+```
+initdb /usr/local/var/postgres -E utf8
+```
+
+Run postgres:
+```
+postgres -D /usr/local/var/postgres
+```
+
+Create your postgres database:
+```
+createdb
+```
+
+Set the `DATABASE_URL` environment variable:
+```
+export DATABASE_URL=postgres:///$(whoami)
+```
+
 To run the bot:
-    ./bot/run.js -a macd
+```
+./bot/run.js -a macd
+```
 
 Note: most bot status info and debugging done through the console 
 
