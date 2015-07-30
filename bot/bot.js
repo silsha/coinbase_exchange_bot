@@ -1,14 +1,12 @@
 #!/usr/bin/env node
 
 var OrderBook = require('./order_book/order_book');
-var Trend = require('./trend');
 var TradeManager = require('./trade_manager/trade_manager');
 var socketIO = require('socket.io');
 var config = require('../config.json');
 
 module.exports = function() {
   var orderBook = new OrderBook();
-  var trend = new Trend();
   var tradeManager = new TradeManager(config);
 
   // setup socket server
@@ -30,7 +28,7 @@ module.exports = function() {
 
     orderBook.on('update', function(moving_averages) {
       updates_initialized = true;
-      trend.updateMovingAverages(moving_averages);
+      console.log('Updated moving averages available.');
     });
 
     // NOTES:
@@ -47,37 +45,9 @@ module.exports = function() {
       tickId = setInterval(nextTick, 1000);
     }
 
-    function placeBuyIfNotExists() {
-      if (!tradeManager.hasLastSuccessfulBuy()) {
-        if (orderBook.hasLastBuyPrice()) {
-          stopProcess();
-          tradeManager.placeBuyOrder(orderBook.getLastBuyPrice());
-        } else {
-          console.log('NO LAST BUY PRICE');
-        }
-      } else {
-        console.log('ACTIVE BUY WAITING -- OR -- WAITING FOR BEARISH');
-      }
-    }
-
-    function placeSellIfNotExists() {
-      if (!tradeManager.hasLastSuccessfulSell()) {
-        if (orderBook.hasLastSellPrice()) {
-          stopProcess();
-          tradeManager.placeSellOrder(orderBook.getLastSellPrice());
-        } else {
-          console.log('NO LAST SELL PRICE');
-        }
-      } else {
-        console.log('ACTIVE SELL WAITING -- OR -- WAITING FOR BULLISH');
-      }
-    }
-
     function logStatus() {
       var last_sell_price = null;
       var last_buy_price = null;
-      var is_impish = false;
-      var is_admirable = false;
 
       if (orderBook.hasLastSellPrice()) {
         last_sell_price = orderBook.getLastSellPrice();
@@ -87,10 +57,6 @@ module.exports = function() {
         last_buy_price = orderBook.getLastBuyPrice();
       }
 
-      is_impish = trend.isBearish();
-      is_admirable = trend.isBullish();
-
-      console.log('IMPISH: ' + is_impish + ' --- ADMIRABLE: ' + is_admirable);
       console.log('LAST BUY: ' + last_buy_price + ' --- ' + 'LAST SELL: ' + last_sell_price);
     }
 
@@ -104,42 +70,6 @@ module.exports = function() {
           bearish: trend.isBearish(),
           bullish: trend.isBullish()
         });
-
-        // spread only, successful on >= ~10 cent spread at low volumes ( below .5 BTC )
-        // doesn't seem to be enough volume to fill .5 BTC and up all at once
-        // if (orderBook.hasLastSellPrice() && orderBook.hasLastBuyPrice()) {
-        //   if (tradeManager.hasReachedProfitMargin(orderBook.getLastSellPrice(), orderBook.getLastBuyPrice())) {
-        //     if (!tradeManager.hasLastSuccessfulBuy()) {
-        //       placeBuyIfNotExists();
-        //     } else {
-        //       placeSellIfNotExists();
-        //     }
-        //   } else if (tradeManager.hasLastSuccessfulBuy()) {
-        //     placeSellIfNotExists();
-        //   }
-        // }
-
-        // spread based on trend, mediocre results
-        // if (orderBook.hasLastSellPrice() && tradeManager.hasReachedProfitMargin(orderBook.getLastSellPrice())) {
-        //   if (tradeManager.hasEverFilledBuy()) {
-        //     console.log('*** attempting sell based on margin ***');
-        //     placeSellIfNotExists();
-        //     return;
-        //   }
-        // }
-
-        // MACD trend buy/sell
-        if (trend.isBullish()) {
-          placeBuyIfNotExists();
-          return;
-        }
-
-        if (trend.isBearish()) {
-          if (tradeManager.hasEverFilledBuy()) {
-            placeSellIfNotExists();
-            return;
-          }
-        }
       }
     }
 

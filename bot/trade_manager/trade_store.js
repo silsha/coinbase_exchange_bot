@@ -60,7 +60,6 @@ TradeStore.prototype.getDailyTradeStats = function(callback) {
 
   dbQuery(function(result) {
     var rows = result.rows;
-    // console.log(result.rows);
     var buys = _.filter(rows, function(trade) {
       return trade.side === 'buy';
     });
