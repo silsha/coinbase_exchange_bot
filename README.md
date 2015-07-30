@@ -17,8 +17,6 @@ Overview:
 defined in /bot/util/definitions.js
 - uses stored match data to calculate moving averages over 1, 3, 5, 10, and 15 minute
 time intervals
-- differences in moving averages defined in /bot/trend.js
-- primary app logic defined in /bot/macd.js
 - buy and sell order wrappers are defined in /bot/order/buy_order.js and /bot/order/sell_order.js
 - the primary logic for deciding trade price margins, trade amounts, and tracking active and last active orders is located in /bot/trade_manager/trade_manager.js
 - when a buy or sell order is placed, the api will be polled at an interval as defined
