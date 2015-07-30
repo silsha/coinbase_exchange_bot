@@ -27,5 +27,17 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 
+# bower dependencies
 bower_components
+
+# OSX
 .DS_Store
+
+# temp files
+tmp
+
+# intellij
+.idea
+
+# coinbase api config file
+config.json

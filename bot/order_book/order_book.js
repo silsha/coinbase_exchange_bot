@@ -30,15 +30,14 @@ function OrderBook() {
 
   this.store = new OrderStore();
   this.store.init(function() {
-    this.coinbaseOrderBoook.on('match', this._onMatch.bind(this));
-    this.coinbaseOrderBoook.on('open', this._onOpen.bind(this));
-    this.coinbaseOrderBoook.on('done', this._onDone.bind(this));
-    this.coinbaseOrderBoook.on('change', this._onChange.bind(this));
-    console.log('---------- WEBSOCKET FEED INITIALIZED ----------');
-
     this._initOrderBook(function() {
       console.log('---------- ORDER BOOK INITIALIZED ----------');
-    });
+      this.coinbaseOrderBoook.on('match', this._onMatch.bind(this));
+      this.coinbaseOrderBoook.on('open', this._onOpen.bind(this));
+      this.coinbaseOrderBoook.on('done', this._onDone.bind(this));
+      this.coinbaseOrderBoook.on('change', this._onChange.bind(this));
+      console.log('---------- WEBSOCKET FEED INITIALIZED ----------');
+    }.bind(this));
   }.bind(this));
 }
 

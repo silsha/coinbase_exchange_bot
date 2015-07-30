@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// MUST BE RUN WITH DATABASE_URL='pg://postgres:btcbot@localhost/coinbase_exchange';
+
 var macd = require('./macd');
 
 var program = require('commander');

@@ -115,7 +115,7 @@ TradeManager.prototype.hasEverFilledBuy = function() {
 };
 
 TradeManager.prototype.hasReachedProfitMargin = function(last_sell_price, last_buy_price) {
-  var margin = 0.12;
+  var margin = 0.15;
   var margin_price = last_buy_price + margin;
   return last_sell_price >= margin_price;
 };
@@ -124,7 +124,8 @@ TradeManager.prototype.placeBuyOrder = function(last_price, callback) {
   var buyOrder = new BuyOrder({
     authedClient: this._authedClient,
     tradeStore: this._tradeStore,
-    price: this._getBuyPrice(last_price),
+    type: 'market',
+    // price: this._getBuyPrice(last_price),
     size: this._getMinimumTradeAmount(last_price)
   });
 
@@ -160,7 +161,8 @@ TradeManager.prototype.placeSellOrder = function(last_price, callback) {
   var sellOrder = new SellOrder({
     authedClient: this._authedClient,
     tradeStore: this._tradeStore,
-    price: this._getSellPrice(last_price),
+    type: 'market',
+    // price: this._getSellPrice(last_price),
     size: this._getMinimumTradeAmount(last_price)
   });
 
